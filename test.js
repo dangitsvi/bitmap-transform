@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-var bitmap = require('./nonpalette-bitmap-transform.js');
 var fs = require('fs');
 
 var oldBuf = fs.readFileSync('./lib/non-palette-bitmap.bmp');
@@ -15,7 +14,7 @@ describe('non-palette bitmap file', function() {
 });
 
 describe('nonpalette-bitmap-transform.js', function() {
-  it('should change the buffers values', function(){
+  it('should change the buffers values', function() {
     expect(oldBuf).to.not.eql(newBuf);
   });
   it('should have inverted value at beginning', function() {
@@ -27,6 +26,5 @@ describe('nonpalette-bitmap-transform.js', function() {
   it('should have inverted value at end', function() {
     expect(newBuf.readUInt8(fileSize-1)).to.eql(255 - oldBuf.readUInt8(fileSize-1));
   });
-
 });
 
