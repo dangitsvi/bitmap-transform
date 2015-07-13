@@ -9,7 +9,7 @@ exports.invertNonPalette = function invertNonPalette(data) {
     data.writeUInt8(255 - data.readUInt8(i), i);
   }
   return data;
-}
+};
 
 exports.invertPalette = function invertPalette(data) {
   var imgStart = data.readUInt32LE(10);
@@ -20,4 +20,4 @@ exports.invertPalette = function invertPalette(data) {
     data.writeUInt8(255 - data.readUInt8(i), i);
   }
   return data;
-}
+};
