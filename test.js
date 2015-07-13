@@ -1,30 +1,40 @@
 var expect = require('chai').expect;
+var invertPalette = require('./transform-functions').invertPalette;
+var invertNonPalette = require('./transform-functions').invertNonPalette;
 var fs = require('fs');
 
-var oldBuf = fs.readFileSync('./lib/non-palette-bitmap.bmp');
-var newBuf = fs.readFileSync('./newpalette.bmp');
+describe('invert non-palette-bitmap function', function() {
 
-var imgStart = oldBuf.readUInt32LE(10);
-var fileSize = oldBuf.readUInt32LE(2);
+  var sampleBuffer;
+  var transformedBuffer;
 
-describe('non-palette bitmap file', function() {
-  it('image should start after 54 bytes', function() {
-    expect(oldBuf.readUInt32LE(10)).to.eql(54);
+  before(function() {
+    sampleBuffer = fs.readFileSync('./lib/non-palette-bitmap.bmp');
+    transformedBuffer = invertNonPalette(fs.readFileSync('./lib/non-palette-bitmap.bmp'));
+  });
+
+  it('should transform buffer', function() {
+    expect(sampleBuffer).to.not.eql(transformedBuffer);
+  });
+  it('should not change the header', function() {
+    expect(sampleBuffer.slice(0,54)).to.eql(transformedBuffer.slice(0,54));
   });
 });
 
-describe('nonpalette-bitmap-transform.js', function() {
-  it('should change the buffers values', function() {
-    expect(oldBuf).to.not.eql(newBuf);
+describe('invert palette-bitmap function', function() {
+
+  var sampleBuffer;
+  var transformedBuffer;
+
+  before(function() {
+    sampleBuffer = fs.readFileSync('./lib/palette-bitmap.bmp');
+    transformedBuffer = invertNonPalette(fs.readFileSync('./lib/palette-bitmap.bmp'));
   });
-  it('should have inverted value at beginning', function() {
-    expect(newBuf.readUInt8(imgStart)).to.eql(255 - oldBuf.readUInt8(imgStart));
+
+  it('should transform buffer', function() {
+    expect(sampleBuffer).to.not.eql(transformedBuffer);
   });
-  it('should have inverted value at middle', function() {
-    expect(newBuf.readUInt8(Math.floor(fileSize/2))).to.eql(255 - oldBuf.readUInt8(Math.floor(fileSize/2)));
-  });
-  it('should have inverted value at end', function() {
-    expect(newBuf.readUInt8(fileSize-1)).to.eql(255 - oldBuf.readUInt8(fileSize-1));
+  it('should not change the header', function() {
+    expect(sampleBuffer.slice(0,54)).to.eql(transformedBuffer.slice(0,54));
   });
 });
-
