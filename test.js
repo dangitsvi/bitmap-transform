@@ -8,9 +8,19 @@ describe('invert non-palette-bitmap function', function() {
   var sampleBuffer;
   var transformedBuffer;
 
-  before(function() {
-    sampleBuffer = fs.readFileSync('./lib/non-palette-bitmap.bmp');
-    transformedBuffer = invertNonPalette(fs.readFileSync('./lib/non-palette-bitmap.bmp'));
+  beforeEach(function(done) {
+
+    fs.readFile('./lib/non-palette-bitmap.bmp', function(err, data) {
+      if(err) {throw err;}
+      sampleBuffer = data;
+    });
+
+    fs.readFile('./lib/non-palette-bitmap.bmp', function(err, data) {
+      if(err) {throw err;}
+      transformedBuffer = invertNonPalette(data);
+      done();
+    });
+
   });
 
   it('should transform buffer', function() {
@@ -26,9 +36,18 @@ describe('invert palette-bitmap function', function() {
   var sampleBuffer;
   var transformedBuffer;
 
-  before(function() {
-    sampleBuffer = fs.readFileSync('./lib/palette-bitmap.bmp');
-    transformedBuffer = invertNonPalette(fs.readFileSync('./lib/palette-bitmap.bmp'));
+  beforeEach(function(done) {
+
+    fs.readFile('./lib/palette-bitmap.bmp', function(err, data) {
+      if(err) {throw err;}
+      sampleBuffer = data;
+    });
+
+    fs.readFile('./lib/palette-bitmap.bmp', function(err, data) {
+      if(err) {throw err;}
+      transformedBuffer = invertPalette(data);
+      done();
+    });
   });
 
   it('should transform buffer', function() {
@@ -36,5 +55,8 @@ describe('invert palette-bitmap function', function() {
   });
   it('should not change the header', function() {
     expect(sampleBuffer.slice(0,54)).to.eql(transformedBuffer.slice(0,54));
+  });
+  it('should change palette data, not image data', function() {
+    expect(sampleBuffer.slice(1078)).to.eql(transformedBuffer.slice(1078));
   });
 });
